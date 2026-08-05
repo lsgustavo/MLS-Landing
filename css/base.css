@@ -10,29 +10,63 @@
    ============================================================ */
 :root {
 
-  /* --- Paleta de Cores --- */
-  --color-primary:        #80664B; /* Marrom principal (logo) */
-  --color-primary-dark:   #5A3E28; /* Marrom escuro — hover, profundidade */
-  --color-primary-light:  #A08468; /* Marrom médio — elementos secundários */
+  /* ============================================================
+     PALETA DA MARCA — fonte única de verdade
+     Somente duas cores cromáticas existem no projeto:
+       #80664B (marrom)  e  #DEC9B2 (bege)
+     Todos os demais tons são mesclas dessas duas com branco/preto
+     puros, mantendo o matiz da marca (~31°) em toda a escala.
+     ============================================================ */
+  --brand-brown: #80664B; /* exato — da identidade visual */
+  --brand-beige: #DEC9B2; /* exato — da identidade visual */
 
-  --color-secondary:      #DEC9B2; /* Bege principal */
-  --color-secondary-dark: #C4A882; /* Bege dourado — bordas, destaques */
-  --color-secondary-light:#F5EDE3; /* Creme claro — fundos de seção */
+  /* Canais RGB para composições translúcidas — rgb(var(--x) / alpha) */
+  --rgb-brown:      128 102 75;  /* #80664B */
+  --rgb-beige:      222 201 178; /* #DEC9B2 */
+  --rgb-brown-700:   70  56 41;  /* marrom 55% — sombras e véus */
+  --rgb-beige-50:   247 242 236; /* bege 25% + branco   */
+
+  /* Escala do marrom — concentrada em torno de #80664B, como na
+     identidade. As superfícies ficam entre 70% e 100% do marrom, em vez
+     de descerem até quase preto, onde o arredondamento perde o matiz. */
+  --brown-700: #463829; /* marrom 55% — texto sobre fundo claro */
+  --brown-600: #5A4734; /* marrom 70% — texto secundário e rodapé */
+  --brown-500: #64503A; /* marrom 78% — hero */
+  --brown-450: #6D5740; /* marrom 85% — sobre e CTA final */
+  --brown-400: var(--brand-brown);
+  --brown-300: #8A7259; /* marrom +  8% branco */
+  --brown-200: #A08C78; /* marrom + 25% branco */
+
+  /* Escala do bege — mesclas com branco e com o marrom da marca */
+  --beige-400: #C2AB93; /* bege 70% + marrom 30% */
+  --beige-300: var(--brand-beige);
+  --beige-200: #E4D3C0; /* bege + 18% branco */
+  --beige-100: #F0E7DC; /* bege + 55% branco */
+  --beige-50:  #F7F2EC; /* bege + 75% branco */
+
+  /* --- Tokens de Cor (apontam para a escala acima) --- */
+  --color-primary:        var(--brown-400); /* #80664B exato */
+  --color-primary-dark:   var(--brown-450);
+  --color-primary-light:  var(--brown-200);
+
+  --color-secondary:      var(--beige-300); /* #DEC9B2 exato */
+  --color-secondary-dark: var(--beige-400);
+  --color-secondary-light:var(--beige-50);
 
   --color-white:          #FFFFFF;
-  --color-off-white:      #FEFCFA; /* Branco levemente quente */
-  --color-dark:           #1C0F06; /* Marrom escuríssimo — quase preto */
-  --color-deep:           #2C1A0E; /* Hero / fundo profundo */
+  --color-off-white:      var(--beige-50);
+  --color-dark:           var(--brown-600); /* rodapé */
+  --color-deep:           var(--brown-500); /* hero */
 
   /* --- Cores Semânticas --- */
-  --color-bg:             var(--color-off-white);
-  --color-bg-alt:         var(--color-secondary-light);
+  --color-bg:             var(--beige-50);
+  --color-bg-alt:         var(--beige-100);
   --color-surface:        var(--color-white);
-  --color-border:         #E2D0BC;
+  --color-border:         var(--beige-200);
 
-  --color-text:           #2C1A0E; /* Texto escuro de alto contraste */
-  --color-text-muted:     #6B5040; /* Texto secundário — ainda legível */
-  --color-text-inverse:   #F5EDE3; /* Texto sobre fundos escuros */
+  --color-text:           var(--brown-700); /* 10.1:1 sobre o fundo claro */
+  --color-text-muted:     var(--brown-600); /* secundário, 7.9:1 sobre o fundo */
+  --color-text-inverse:   var(--beige-50);  /* sobre fundos escuros */
 
   --color-accent:         var(--color-primary);
   --color-accent-hover:   var(--color-primary-dark);
@@ -42,10 +76,14 @@
   --font-sans:     'Josefin Sans', 'Helvetica Neue', sans-serif; /* Corpo, labels, nav — replica o logo */
 
   /* --- Tipografia — Escala de tamanhos (fluid) --- */
-  --text-xs:    clamp(0.70rem, 1.5vw, 0.75rem);  /* 11–12px */
-  --text-sm:    clamp(0.80rem, 1.8vw, 0.875rem); /* 13–14px */
-  --text-base:  clamp(0.95rem, 2vw,   1rem);     /* 15–16px */
-  --text-md:    clamp(1.05rem, 2.2vw, 1.125rem); /* 17–18px */
+  /* Rótulos de botão e navegação: mantidos compactos para não estourar
+     a navbar, que já opera no limite de largura */
+  --text-ui:    clamp(0.70rem, 1.5vw, 0.75rem);    /* 11–12px */
+
+  --text-xs:    clamp(0.75rem, 1.6vw, 0.8125rem);  /* 12–13px */
+  --text-sm:    clamp(0.875rem, 1.9vw, 0.9375rem); /* 14–15px */
+  --text-base:  clamp(1rem, 2.1vw, 1.0625rem);     /* 16–17px */
+  --text-md:    clamp(1.0625rem, 2.3vw, 1.1875rem);/* 17–19px */
   --text-lg:    clamp(1.15rem, 2.5vw, 1.25rem);  /* 18–20px */
   --text-xl:    clamp(1.35rem, 3vw,   1.5rem);   /* 22–24px */
   --text-2xl:   clamp(1.75rem, 4vw,   2rem);     /* 28–32px */
@@ -98,10 +136,10 @@
   --border-accent: 1px solid var(--color-primary);
 
   /* --- Sombras --- */
-  --shadow-sm:  0 1px 4px rgba(128, 102, 75, 0.08);
-  --shadow-md:  0 4px 16px rgba(128, 102, 75, 0.12);
-  --shadow-lg:  0 12px 40px rgba(128, 102, 75, 0.16);
-  --shadow-xl:  0 24px 64px rgba(128, 102, 75, 0.20);
+  --shadow-sm:  0 1px 4px   rgb(var(--rgb-brown-700) / 0.10);
+  --shadow-md:  0 4px 16px  rgb(var(--rgb-brown-700) / 0.14);
+  --shadow-lg:  0 12px 40px rgb(var(--rgb-brown-700) / 0.18);
+  --shadow-xl:  0 24px 64px rgb(var(--rgb-brown-700) / 0.22);
 
   /* --- Transições --- */
   --transition-fast:   150ms ease;

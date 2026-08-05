@@ -13,24 +13,259 @@ window.addEventListener('scroll', onScroll, { passive: true });
 
 /* ---- Hamburger (mobile) ---- */
 const hamburger = document.querySelector('.nav__hamburger');
-const navLinks  = document.querySelector('.nav__links');
-const navCta    = document.querySelector('.nav__cta');
+const navMenu   = document.querySelector('.nav__menu');
 
-if (hamburger) {
+if (hamburger && navMenu) {
   hamburger.addEventListener('click', () => {
     const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
     hamburger.setAttribute('aria-expanded', String(!isOpen));
-    navLinks?.classList.toggle('nav__links--open', !isOpen);
-    navCta?.classList.toggle('nav__cta--open', !isOpen);
+    navMenu.classList.toggle('nav__menu--open', !isOpen);
   });
 
   /* fecha o menu ao clicar em um link */
-  navLinks?.querySelectorAll('.nav__link').forEach(link => {
+  navMenu.querySelectorAll('.nav__link').forEach(link => {
     link.addEventListener('click', () => {
       hamburger.setAttribute('aria-expanded', 'false');
-      navLinks.classList.remove('nav__links--open');
-      navCta?.classList.remove('nav__cta--open');
+      navMenu.classList.remove('nav__menu--open');
     });
+  });
+}
+
+/* ---- Select customizado ----
+   Segue o padrão ARIA de combobox somente-seleção: o foco permanece no
+   botão e a opção em destaque é apontada por aria-activedescendant.
+   O <select> nativo continua no DOM, invisível, guardando o valor — assim
+   o FormData e a validação de campo obrigatório seguem intactos, e o
+   formulário permanece utilizável caso este script não seja executado. */
+const enhanceSelect = wrapper => {
+  const native = wrapper.querySelector('select');
+  if (!native) return;
+
+  const id = native.id;
+  const field = wrapper.closest('.form-field');
+  const label = field?.querySelector('label');
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.id = `${id}-button`;
+  button.className = 'select__button';
+  button.setAttribute('role', 'combobox');
+  button.setAttribute('aria-haspopup', 'listbox');
+  button.setAttribute('aria-expanded', 'false');
+  button.setAttribute('aria-controls', `${id}-listbox`);
+
+  const valueEl = document.createElement('span');
+  valueEl.className = 'select__value';
+  valueEl.id = `${id}-value`;
+
+  const caret = document.createElement('span');
+  caret.className = 'select__caret';
+  caret.setAttribute('aria-hidden', 'true');
+  button.append(valueEl, caret);
+
+  const list = document.createElement('ul');
+  list.id = `${id}-listbox`;
+  list.className = 'select__list';
+  list.setAttribute('role', 'listbox');
+
+  /* A opção desabilitada do markup é o texto de placeholder, não um valor */
+  const placeholder = Array.from(native.options).find(option => option.disabled);
+  const options = Array.from(native.options).filter(option => !option.disabled);
+
+  const optionEls = options.map((option, index) => {
+    const item = document.createElement('li');
+    item.id = `${id}-option-${index}`;
+    item.className = 'select__option';
+    item.setAttribute('role', 'option');
+    item.dataset.value = option.value;
+    item.textContent = option.text;
+    list.append(item);
+    return item;
+  });
+
+  if (label) {
+    label.id = `${id}-label`;
+    /* O for apontaria para o nativo invisível; o clique é redirecionado */
+    label.removeAttribute('for');
+    label.addEventListener('click', () => button.focus());
+    button.setAttribute('aria-labelledby', `${label.id} ${valueEl.id}`);
+  }
+
+  wrapper.append(button, list);
+  wrapper.classList.add('select--enhanced');
+  native.classList.add('select__native');
+  native.tabIndex = -1;
+  native.setAttribute('aria-hidden', 'true');
+
+  let isOpen = false;
+  let activeIndex = -1;
+  let typedQuery = '';
+  let typedTimer;
+
+  const selectedIndex = () => optionEls.findIndex(item => item.dataset.value === native.value);
+
+  const syncFromNative = () => {
+    const current = selectedIndex();
+    optionEls.forEach((item, index) => item.setAttribute('aria-selected', String(index === current)));
+    valueEl.textContent = current >= 0 ? optionEls[current].textContent : (placeholder?.text ?? '');
+    valueEl.classList.toggle('select__value--placeholder', current < 0);
+  };
+
+  const setActive = index => {
+    activeIndex = index;
+    optionEls.forEach((item, i) => item.classList.toggle('is-active', i === index));
+
+    if (index < 0) {
+      button.removeAttribute('aria-activedescendant');
+      return;
+    }
+
+    const item = optionEls[index];
+    button.setAttribute('aria-activedescendant', item.id);
+
+    /* Rolagem manual: scrollIntoView arrastaria a página junto */
+    const top = item.offsetTop;
+    const bottom = top + item.offsetHeight;
+    if (top < list.scrollTop) list.scrollTop = top;
+    else if (bottom > list.scrollTop + list.clientHeight) list.scrollTop = bottom - list.clientHeight;
+  };
+
+  const open = () => {
+    if (isOpen) return;
+    isOpen = true;
+    wrapper.classList.add('select--open');
+    button.setAttribute('aria-expanded', 'true');
+    setActive(Math.max(selectedIndex(), 0));
+  };
+
+  const close = ({ refocus = true } = {}) => {
+    if (!isOpen) return;
+    isOpen = false;
+    wrapper.classList.remove('select--open');
+    button.setAttribute('aria-expanded', 'false');
+    setActive(-1);
+    if (refocus) button.focus();
+  };
+
+  const choose = (index, closeOptions) => {
+    const item = optionEls[index];
+    if (item && native.value !== item.dataset.value) {
+      native.value = item.dataset.value;
+      native.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    close(closeOptions);
+  };
+
+  const search = char => {
+    clearTimeout(typedTimer);
+    typedQuery += char.toLowerCase();
+    typedTimer = setTimeout(() => { typedQuery = ''; }, 600);
+
+    const match = optionEls.findIndex(item => item.textContent.toLowerCase().startsWith(typedQuery));
+    if (match >= 0) {
+      if (isOpen) setActive(match);
+      else choose(match);
+    }
+  };
+
+  button.addEventListener('click', () => (isOpen ? close() : open()));
+
+  button.addEventListener('keydown', event => {
+    const { key } = event;
+
+    if (!isOpen) {
+      if (key === 'ArrowDown' || key === 'ArrowUp' || key === 'Enter' || key === ' ') {
+        event.preventDefault();
+        open();
+      } else if (key.length === 1 && key !== ' ') {
+        search(key);
+      }
+      return;
+    }
+
+    if (key === 'ArrowDown') {
+      event.preventDefault();
+      setActive(Math.min(activeIndex + 1, optionEls.length - 1));
+    } else if (key === 'ArrowUp') {
+      event.preventDefault();
+      setActive(Math.max(activeIndex - 1, 0));
+    } else if (key === 'Home') {
+      event.preventDefault();
+      setActive(0);
+    } else if (key === 'End') {
+      event.preventDefault();
+      setActive(optionEls.length - 1);
+    } else if (key === 'Enter' || key === ' ') {
+      event.preventDefault();
+      choose(activeIndex);
+    } else if (key === 'Tab') {
+      /* Confirma a opção em destaque sem interromper a ordem de tabulação */
+      choose(activeIndex, { refocus: false });
+    } else if (key === 'Escape') {
+      event.preventDefault();
+      close();
+    } else if (key.length === 1) {
+      search(key);
+    }
+  });
+
+  /* Mantém o foco no botão ao clicar numa opção, preservando o padrão ARIA */
+  list.addEventListener('mousedown', event => event.preventDefault());
+
+  list.addEventListener('click', event => {
+    const item = event.target.closest('.select__option');
+    if (item) choose(optionEls.indexOf(item));
+  });
+
+  wrapper.addEventListener('focusout', event => {
+    if (!wrapper.contains(event.relatedTarget)) close({ refocus: false });
+  });
+
+  document.addEventListener('pointerdown', event => {
+    if (!wrapper.contains(event.target)) close({ refocus: false });
+  });
+
+  native.addEventListener('change', syncFromNative);
+  native.form?.addEventListener('reset', () => setTimeout(syncFromNative));
+
+  syncFromNative();
+};
+
+document.querySelectorAll('.select').forEach(enhanceSelect);
+
+/* ---- Prévia de orçamento: organiza respostas e abre o WhatsApp ---- */
+const estimateForm = document.getElementById('estimate-form');
+const estimateStatus = document.getElementById('estimate-status');
+
+if (estimateForm) {
+  estimateForm.addEventListener('submit', event => {
+    event.preventDefault();
+
+    const data = new FormData(estimateForm);
+    const details = String(data.get('detalhes') || '').trim();
+
+    const message = [
+      '*SOLICITAÇÃO DE PRÉVIA DE ORÇAMENTO*',
+      '',
+      `*Nome:* ${String(data.get('nome')).trim()}`,
+      `*Área de atuação:* ${String(data.get('negocio')).trim()}`,
+      `*Solução procurada:* ${data.get('servico')}`,
+      `*Momento do negócio:* ${data.get('momento')}`,
+      `*Quantidade de documentos:* ${data.get('volume')}`,
+      `*Previsão para começar:* ${data.get('prazo')}`,
+      ...(details ? ['', '*Necessidade descrita:*', details] : []),
+      '',
+      '_Respostas enviadas pelo questionário do site._',
+    ].join('\n');
+
+    const whatsappUrl = `https://wa.me/5512982148377?text=${encodeURIComponent(message)}`;
+    const whatsappWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+
+    if (estimateStatus) {
+      estimateStatus.textContent = whatsappWindow
+        ? 'WhatsApp aberto. Revise a mensagem e confirme o envio.'
+        : 'Não foi possível abrir uma nova aba. Verifique o bloqueio de pop-ups.';
+    }
   });
 }
 
@@ -44,6 +279,8 @@ if (!prefersReducedMotion) {
     ...document.querySelectorAll('.results__highlight'),
     ...document.querySelectorAll('.results__col'),
     ...document.querySelectorAll('.process-step'),
+    ...document.querySelectorAll('.estimate__intro'),
+    ...document.querySelectorAll('.estimate-form'),
     ...document.querySelectorAll('.faq-item'),
     ...document.querySelectorAll('.cta-final__inner'),
   ];

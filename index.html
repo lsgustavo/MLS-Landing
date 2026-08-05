@@ -10,7 +10,7 @@
     <meta name="description" content="Elaboro estratégias contratuais e documentais para que o seu negócio esteja preparado para todos os cenários — com segurança, organização e previsibilidade.">
     <meta name="author" content="Maria Luiza Salles">
     <meta name="robots" content="index, follow">
-    <meta name="theme-color" content="#5A3E28">
+    <meta name="theme-color" content="#2C231A">
     <link rel="canonical" href="https://lsgustavo.github.io/MLS-Landing/">
 
     <!-- Favicon -->
@@ -55,25 +55,34 @@
     <header class="nav" id="nav">
       <div class="container nav__inner">
 
-        <a href="#hero" class="nav__logo" aria-label="Maria Luiza Salles">
-          <img src="./assets/img/logo-mono-cream.png" alt="Maria Luiza Salles — Estruturação Contratual" class="nav__logo-img nav__logo-img--cream">
-          <img src="./assets/img/logo-mono-brown.png" alt="" aria-hidden="true" class="nav__logo-img nav__logo-img--brown">
+        <a href="#hero" class="nav__logo" aria-label="Maria Luiza Salles — Estruturação Contratual">
+          <!-- Entre 1025px e 1279px os links e o CTA disputam espaço com o lockup,
+               então apenas o monograma é exibido nessa faixa -->
+          <picture class="nav__logo-img nav__logo-img--cream">
+            <source media="(min-width: 1025px) and (max-width: 1279px)" srcset="./assets/img/logo-mark-cream.png" width="266" height="240">
+            <img src="./assets/img/logo-lockup-cream.png" alt="Maria Luiza Salles" width="988" height="200">
+          </picture>
+          <picture class="nav__logo-img nav__logo-img--brown" aria-hidden="true">
+            <source media="(min-width: 1025px) and (max-width: 1279px)" srcset="./assets/img/logo-mark-brown.png" width="266" height="240">
+            <img src="./assets/img/logo-lockup-brown.png" alt="" width="988" height="200">
+          </picture>
         </a>
 
-        <nav aria-label="Menu principal">
+        <nav class="nav__menu" id="nav-menu" aria-label="Menu principal">
           <ul class="nav__links">
             <li><a href="#comparativo" class="nav__link">Comparativo</a></li>
             <li><a href="#resultados" class="nav__link">Resultados</a></li>
             <li><a href="#sobre" class="nav__link">Sobre</a></li>
+            <li><a href="#orcamento" class="nav__link">Orçamento</a></li>
             <li><a href="#faq" class="nav__link">Perguntas</a></li>
           </ul>
+
+          <a href="https://wa.me/5512982148377" target="_blank" rel="noopener" class="btn btn--primary nav__cta">
+            Agendar conversa
+          </a>
         </nav>
 
-        <a href="https://wa.me/5512982148377" target="_blank" rel="noopener" class="btn btn--primary nav__cta">
-          Agendar conversa
-        </a>
-
-        <button class="nav__hamburger" aria-label="Abrir menu" aria-expanded="false">
+        <button class="nav__hamburger" aria-label="Abrir menu" aria-controls="nav-menu" aria-expanded="false">
           <span></span>
           <span></span>
           <span></span>
@@ -204,7 +213,7 @@
             <div class="results__col">
               <span class="label-upper">O que você recebe</span>
               <ul class="results__list">
-                <li>Toda a estrutura para a padronização documental, elaborada de forma estratégica e personalizada.</li>
+                <li>Toda a estrutura para a padronização operacional, elaborada de forma estratégica e personalizada.</li>
                 <li>Contratos e termos necessários para o seu negócio, pautados na sua realidade operacional, no Código de Defesa do Consumidor e no Código Civil.</li>
                 <li>Vias física e digital editável, além do Manual do Contrato — com explicações claras e objetivas sobre cada detalhe dos documentos entregues.</li>
               </ul>
@@ -296,6 +305,121 @@
             </li>
 
           </ol>
+        </div>
+      </section>
+
+
+      <!-- ============================================================
+           PRÉVIA DO ORÇAMENTO
+      ============================================================ -->
+      <section class="estimate" id="orcamento">
+        <div class="container estimate__inner">
+
+          <div class="estimate__intro">
+            <span class="label-upper">Prévia do seu orçamento</span>
+            <h2 class="heading-2 estimate__title">
+              Conte um pouco<br>sobre o seu negócio.
+            </h2>
+            <p class="body-text">
+              Responda às perguntas para que eu possa compreender a sua necessidade
+              e preparar uma estimativa inicial adequada à realidade da sua operação.
+            </p>
+
+            <div class="estimate__channel">
+              <span class="estimate__channel-icon" aria-hidden="true">01</span>
+              <div>
+                <strong>Envio direto pelo WhatsApp</strong>
+                <p>Ao concluir, suas respostas serão organizadas em uma mensagem para você revisar antes de enviar.</p>
+              </div>
+            </div>
+          </div>
+
+          <form class="estimate-form" id="estimate-form">
+            <div class="estimate-form__grid">
+              <div class="form-field">
+                <label for="estimate-name">Seu nome <span aria-hidden="true">*</span></label>
+                <input type="text" id="estimate-name" name="nome" autocomplete="name" required>
+              </div>
+
+              <div class="form-field">
+                <label for="estimate-business">Área de atuação do negócio <span aria-hidden="true">*</span></label>
+                <input type="text" id="estimate-business" name="negocio" placeholder="Ex.: clínica, consultoria, estética" required>
+              </div>
+
+              <div class="form-field form-field--full">
+                <label for="estimate-service">Qual solução você procura? <span aria-hidden="true">*</span></label>
+                <div class="select">
+                  <select id="estimate-service" name="servico" required>
+                    <option value="" selected disabled>Selecione uma opção</option>
+                    <option>Estruturação contratual completa</option>
+                    <option>Elaboração de um contrato específico</option>
+                    <option>Revisão ou atualização de contrato existente</option>
+                    <option>Termos, políticas ou documentos complementares</option>
+                    <option>Ainda não sei — preciso de orientação</option>
+                  </select>
+                </div>
+              </div>
+
+              <fieldset class="form-field form-field--full">
+                <legend>Em que momento seu negócio está? <span aria-hidden="true">*</span></legend>
+                <div class="form-options">
+                  <label class="form-option">
+                    <input type="radio" name="momento" value="Em fase de estruturação" required>
+                    <span>Em fase de estruturação</span>
+                  </label>
+                  <label class="form-option">
+                    <input type="radio" name="momento" value="Em operação">
+                    <span>Em operação</span>
+                  </label>
+                  <label class="form-option">
+                    <input type="radio" name="momento" value="Em crescimento">
+                    <span>Em crescimento</span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <div class="form-field form-field--full">
+                <label for="estimate-volume">Quantidade estimada de documentos</label>
+                <div class="select">
+                  <select id="estimate-volume" name="volume">
+                    <option value="Ainda não sei" selected>Ainda não sei</option>
+                    <option>1 documento</option>
+                    <option>2 a 3 documentos</option>
+                    <option>4 ou mais documentos</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-field form-field--full">
+                <label for="estimate-deadline">Quando pretende começar? <span aria-hidden="true">*</span></label>
+                <div class="select">
+                  <select id="estimate-deadline" name="prazo" required>
+                    <option value="" selected disabled>Selecione uma opção</option>
+                    <option>O quanto antes</option>
+                    <option>Nos próximos 30 dias</option>
+                    <option>Nos próximos 3 meses</option>
+                    <option>Estou apenas pesquisando</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-field form-field--full">
+                <label for="estimate-details">Descreva brevemente a sua necessidade</label>
+                <textarea id="estimate-details" name="detalhes" rows="4" maxlength="600" placeholder="Não inclua informações confidenciais ou dados de terceiros."></textarea>
+              </div>
+            </div>
+
+            <p class="estimate-form__note">
+              A prévia não é automática: as respostas serão analisadas antes da estimativa.
+              Não envie documentos ou informações jurídicas sensíveis neste formulário.
+            </p>
+
+            <button type="submit" class="btn estimate-form__submit">
+              Enviar respostas no WhatsApp
+            </button>
+            <p class="estimate-form__status" id="estimate-status" role="status" aria-live="polite"></p>
+          </form>
+
         </div>
       </section>
 
@@ -395,13 +519,14 @@
       <div class="container footer__inner">
 
         <div class="footer__brand">
-          <img src="./assets/img/logo-mono-cream.png" alt="Maria Luiza Salles" class="footer__logo">
+          <img src="./assets/img/logo-stacked-cream.png" alt="Maria Luiza Salles — Estruturação Contratual" width="798" height="420" class="footer__logo">
         </div>
 
         <nav class="footer__nav" aria-label="Rodapé">
           <a href="#comparativo" class="footer__link">Comparativo</a>
           <a href="#resultados" class="footer__link">Resultados</a>
           <a href="#sobre" class="footer__link">Sobre</a>
+          <a href="#orcamento" class="footer__link">Orçamento</a>
           <a href="#faq" class="footer__link">Perguntas</a>
         </nav>
 
