@@ -349,7 +349,7 @@
 
 .compare-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .compare-row:not(:last-child) {
@@ -438,7 +438,7 @@
 
 .results__highlights {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--space-1);
   margin-bottom: var(--space-16);
   background-color: var(--color-border);
@@ -472,7 +472,7 @@
 
 .results__grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--space-16);
   align-items: start;
 }
@@ -527,7 +527,7 @@
 
 .about__inner {
   display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   gap: var(--space-20);
   align-items: center;
 }
@@ -612,7 +612,7 @@
 
 .process__steps {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0;
   list-style: none;
   position: relative;
@@ -1063,7 +1063,7 @@
 
 .faq__inner {
   display: grid;
-  grid-template-columns: 5fr 7fr;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
   gap: var(--space-20);
   align-items: start;
 }
@@ -1323,8 +1323,11 @@
     box-shadow: var(--shadow-md);
   }
 
+  /* minmax(0, 1fr) em vez de 1fr: uma trilha 1fr tem mínimo automático de
+     min-content, então basta um filho que não quebra linha para empurrar a
+     coluna além da largura da tela e abrir uma faixa vazia na página toda. */
   .estimate__inner {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-10);
   }
 
@@ -1334,7 +1337,7 @@
   }
 
   .faq__inner {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-10);
   }
 
@@ -1350,19 +1353,19 @@
   }
 
   .results__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-10);
   }
 
   .about__inner {
-    grid-template-columns: 1fr 1.2fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
     gap: var(--space-10);
   }
 }
 
 @media (max-width: 768px) {
   .estimate-form__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .form-field--full {
@@ -1370,7 +1373,7 @@
   }
 
   .form-options {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .footer__logo {
@@ -1394,7 +1397,7 @@
 
   /* Comparativo: colunas empilhadas */
   .compare-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .compare-cell:first-child {
@@ -1409,12 +1412,12 @@
 
   /* Resultados */
   .results__highlights {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   /* Processo: 1 coluna */
   .process__steps {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .process-step {
@@ -1431,7 +1434,7 @@
 
   /* Sobre: 1 coluna */
   .about__inner {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-10);
   }
 
@@ -1465,9 +1468,15 @@
     width: 100%;
   }
 
+  /* Ocupando a largura toda, o rótulo não precisa mais caber em uma linha.
+     Com o nowrap herdado, o botão mais longo ("Enviar respostas no WhatsApp")
+     fixava uma largura mínima maior que a tela do celular, empurrando a
+     página inteira e abrindo uma faixa vazia lateral. */
   .btn {
     width: 100%;
     justify-content: center;
+    padding-inline: var(--space-5);
+    white-space: normal;
   }
 
   .cta-final__title {
