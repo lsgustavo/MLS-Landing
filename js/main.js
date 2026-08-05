@@ -3,13 +3,34 @@
 /* ---- Nav: torna-se sólido após sair do hero ---- */
 const nav  = document.getElementById('nav');
 const hero = document.getElementById('hero');
+const themeColor = document.querySelector('meta[name="theme-color"]');
+
+/* A meta theme-color não aceita var(), então os tons são lidos dos próprios
+   tokens — assim a barra do navegador no Android acompanha a nav em vez de
+   destoar em uma cor fora da paleta. */
+const rootStyles = getComputedStyle(document.documentElement);
+const navTheme = {
+  top: rootStyles.getPropertyValue('--color-deep').trim(),
+  scrolled: rootStyles.getPropertyValue('--color-bg').trim(),
+};
 
 const onScroll = () => {
   const threshold = hero ? hero.offsetHeight - 72 : 80;
-  nav.classList.toggle('is-scrolled', window.scrollY > threshold);
+  const isScrolled = window.scrollY > threshold;
+
+  nav.classList.toggle('is-scrolled', isScrolled);
+
+  const tone = isScrolled ? navTheme.scrolled : navTheme.top;
+  if (themeColor && tone) {
+    themeColor.content = tone;
+  }
 };
 
 window.addEventListener('scroll', onScroll, { passive: true });
+
+/* Recarregar a página no meio do documento não dispara scroll — sem esta
+   chamada a nav abriria no estado errado, escura sobre o conteúdo claro */
+onScroll();
 
 /* ---- Hamburger (mobile) ---- */
 const hamburger = document.querySelector('.nav__hamburger');
