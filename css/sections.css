@@ -429,8 +429,8 @@
   top: calc(var(--space-6) + 5px);
   width: 9px;
   height: 6px;
-  border-left: 1.5px solid var(--color-primary);
-  border-bottom: 1.5px solid var(--color-primary);
+  border-left: 1.5px solid #059669; /* emerald */
+  border-bottom: 1.5px solid #059669;
   transform: rotate(-45deg);
 }
 
