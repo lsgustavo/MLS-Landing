@@ -194,6 +194,12 @@
   padding-top: calc(72px + var(--space-20));
   padding-bottom: var(--space-20);
   background-color: var(--color-deep);
+  background-image: linear-gradient(
+    165deg,
+    var(--brown-450) 0%,
+    var(--color-deep) 48%,
+    var(--brown-600) 100%
+  );
   position: relative;
   overflow: hidden;
 }
@@ -522,10 +528,24 @@
    ============================================================ */
 .about {
   background-color: var(--color-primary-dark);
+  background-image:
+    radial-gradient(
+      ellipse 75% 70% at 12% 45%,
+      rgb(var(--rgb-brown) / 0.28) 0%,
+      transparent 68%
+    ),
+    linear-gradient(
+      155deg,
+      var(--brown-400) 0%,
+      var(--color-primary-dark) 46%,
+      var(--brown-600) 100%
+    );
   position: relative;
 }
 
 .about__inner {
+  position: relative;
+  z-index: var(--z-raised);
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   gap: var(--space-20);
@@ -1142,6 +1162,12 @@
    ============================================================ */
 .cta-final {
   background-color: var(--color-primary-dark);
+  background-image: linear-gradient(
+    180deg,
+    var(--brown-500) 0%,
+    var(--color-primary-dark) 52%,
+    var(--brown-600) 100%
+  );
   padding-block: var(--section-padding-y);
   position: relative;
   overflow: hidden;
@@ -1205,6 +1231,11 @@
    ============================================================ */
 .footer {
   background-color: var(--color-dark);
+  background-image: linear-gradient(
+    180deg,
+    var(--brown-600) 0%,
+    var(--brown-700) 100%
+  );
   padding-block: var(--space-16);
   border-top: 1px solid rgb(var(--rgb-brown) / 0.25);
 }
@@ -1247,13 +1278,6 @@
 
 .footer__link:hover {
   color: var(--color-secondary);
-}
-
-.footer__contact {
-  display: flex;
-  gap: var(--space-6);
-  flex-wrap: wrap;
-  justify-content: center;
 }
 
 .footer__copy {
