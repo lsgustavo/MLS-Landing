@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://lsgustavo.github.io/MLS-Landing/sitemap.xml
+Sitemap: https://marialuizasalles.com.br/sitemap.xml
